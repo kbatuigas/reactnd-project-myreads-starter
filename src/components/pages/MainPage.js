@@ -5,6 +5,21 @@ import * as BooksAPI from '../../BooksAPI'
 import Shelf from '../Shelf';
 
 class MainPage extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            books: []
+        }
+    }
+    
+    componentDidMount() {
+        BooksAPI.getAll()
+        .then(response => {
+            console.log(response);
+            this.setState({ books: response});
+        });
+    }
+    
     render() {
         return (
             <div className="list-books">
@@ -13,7 +28,12 @@ class MainPage extends React.Component {
                 </div>
                 <div className="list-books-content">
                 <div>
-                    <Shelf />
+                    <Shelf name="Currently Reading" 
+                        books={this.state.books.filter(b => b.shelf === "currentlyReading")} />
+                    <Shelf name="Want to Read" 
+                        books={this.state.books.filter(b => b.shelf === "wantToRead")} />
+                    <Shelf name="Read" 
+                        books={this.state.books.filter(b => b.shelf === "read")} />
                     
                 </div>
                 </div>
