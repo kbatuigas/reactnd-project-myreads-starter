@@ -17,7 +17,6 @@ class SearchPage extends React.Component {
   componentDidMount() {
       BooksAPI.getAll()
       .then(resp => {
-          console.log(resp);
           this.setState({ books: resp});
       });
   }
@@ -35,7 +34,8 @@ class SearchPage extends React.Component {
 
     /* If search term is defined/not empty */
     BooksAPI.search(this.state.query.trim()).then(res => {
-      console.log(res);
+      /*console.log(res);*/
+      
       if (res.error) {
         /* Empty out search results*/
         return this.setState({ results: [] });
