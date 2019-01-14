@@ -2,9 +2,6 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 class Book extends React.Component {
-    componentDidMount() {
-        console.log(this);
-    }
 
     render() {
         return (
@@ -23,7 +20,8 @@ class Book extends React.Component {
                         </div>
                     </div>
                     <div className="book-title">{this.props.book.title}</div>
-                    <div className="book-authors">{this.props.book.authors[0] || "No authors found"}</div>
+                    { /* In the following props we want to account for book with no author info */ }
+                    <div className="book-authors">{this.props.book.authors && this.props.book.authors[0] || "No authors found"}</div>
                 </div>
             </li>
         );
