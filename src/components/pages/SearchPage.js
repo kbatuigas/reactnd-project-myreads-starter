@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 import * as BooksAPI from '../../BooksAPI'
+import Book from '../Book';
 
 class SearchPage extends React.Component {
   constructor(props) {
@@ -15,10 +16,34 @@ class SearchPage extends React.Component {
 
   componentDidMount() {
       BooksAPI.getAll()
-      .then(response => {
-          console.log(response);
-          this.setState({ books: response});
+      .then(resp => {
+          console.log(resp);
+          this.setState({ books: resp});
       });
+  }
+
+  updateQuery = (query) => {
+    this.setState({query: query}, this.submitSearch);
+  }
+
+  /* callback in updateQuery */
+
+  submitSearch() {
+    if (this.state.query === '' || this.state.query === undefined) {
+      return this.setState({ results: [] });
+    }
+
+    /* If search term is defined/not empty */
+    BooksAPI.search(this.state.query.trim()).then(res => {
+      console.log(res);
+      if (res.error) {
+        /* Empty out search results*/
+        return this.setState({ results: [] });
+      }
+      else {
+        return this.setState({ results: res });
+      }
+    })
   }
 
   updateBook = (book, shelf) => {
@@ -45,12 +70,16 @@ class SearchPage extends React.Component {
                 However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
                 you don't find a specific author or title. Every search is limited by search terms.
               */}
-              <input type="text" placeholder="Search by title or author"/ >
+              <input type="text" placeholder="Search by title or author" value={this.state.query}
+                onChange={(event => this.updateQuery(event.target.value))} />
 
             </div>
           </div>
           <div className="search-books-results">
-            <ol className="books-grid"></ol>
+            <ol className="books-grid">
+              { this.state.results.map((item, key) => <Book
+                key={key} book={item} />)}
+            </ol>  
           </div>
         </div>        
       );
